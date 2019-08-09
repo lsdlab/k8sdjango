@@ -1,0 +1,98 @@
+version: '3'  
+services:
+  web:
+    build: .
+    image: django-docker-web
+    restart: always
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP01]
+    depends_on:
+      - "db"
+    volumes:
+      - ./src:/src
+    expose:
+      - "8080"
+      
+  db:
+    image: postgres:11.4
+    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP02]
+    environment:
+      POSTGRES_USER: k8sdjango_production
+      POSTGRES_PASSWORD: b8n2maLRb7EUyv8c
+      POSTGRES_DB: k8sdjango_production
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./compose/postgres_data:/var/lib/postgresql/data
+ 
+  redis:
+    image: redis:5.0.5
+    command: redis-server
+    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP03]
+    ports:
+     - '6379:6379'
+    volumes:
+      - ./compose/redis_data:/data
+
+  nginx:
+    image: nginx:1.16
+    restart: always
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.hostname == SmartMP01]
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - "web"
+  
+  celery_worker:
+    build: .
+    depends_on:
+      - "web"
+      - "redis"
+    command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
+    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP03]
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings
+
+  celery_beat:
+    build: .
+    depends_on:
+      - "web"
+      - "redis"
+    command: celery -A apps.celeryconfig beat --loglevel=info
+    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP03]
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings

@@ -1,0 +1,101 @@
+version: '3'
+services:
+  db:
+    image: postgres:11.4
+    container_name: k8sdjango-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: k8sdjango_production
+      POSTGRES_PASSWORD: b8n2maLRb7EUyv8c
+      POSTGRES_DB: k8sdjango_production
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./compose/postgres_data:/var/lib/postgresql/data
+      - ./compose/postgres_data/postgresql.conf:/usr/local/etc/postgresql/11/postgresql.conf
+      - ./compose/postgres_data/pg_hba.conf:/usr/local/etc/postgresql/11/pg_hba.conf
+
+  redis:
+    image: redis:5.0.5
+    container_name: k8sdjango-redis
+    restart: always
+    ports:
+     - '6379:6379'
+    volumes:
+      - ./compose/redis_data:/data
+    depends_on:
+      - "db"
+
+  rabbitmq:
+    image: rabbitmq:3.7.17-management
+    container_name: k8sdjango-rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
+      RABBITMQ_DEFAULT_USER: k8sdjangovhost
+      RABBITMQ_DEFAULT_PASS: b8n2maLRb7EUyv8c
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./compose/rabbitmq_data:/var/lib/rabbitmq
+    depends_on:
+      - "redis"
+
+  nginx:
+    image: nginx:1.16
+    container_name: k8sdjango-nginx
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./compose/nginx:/etc/nginx/conf.d
+      - ./compose/static:/k8sdjango/static
+    depends_on:
+      - "web"
+
+  web:
+    build: .
+    image: django-docker-web
+    container_name: k8sdjango-web
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi -b 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings
+    depends_on:
+      - "db"
+      - "redis"
+      - "rabbitmq"
+    volumes:
+      - ./compose/log_data/nginx_k8sdjango.access.log:/var/log/nginx_k8sdjango.access.log;
+      - ./compose/log_data/nginx_k8sdjango.error.log:/var/log/nginx_k8sdjango.error.log;
+      - ./compose/log_data/gunicorn_k8sdjango.access.log:/var/log/gunicorn_k8sdjango.access.log;
+      - ./compose/log_data/gunicorn_k8sdjango.error.log:/var/log/gunicorn_k8sdjango.error.log;
+      - ./compose/static:/k8sdjango/static
+    expose:
+      - "8080"
+
+  celery_worker:
+    build: .
+    container_name: k8sdjango-celery_worker
+    command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
+    restart: always
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings
+    depends_on:
+      - "db"
+      - "redis"
+      - "rabbitmq"
+      - "web"
+
+  celery_beat:
+    build: .
+    container_name: k8sdjango-celery_beat
+    command: celery -A apps.celeryconfig beat --loglevel=info
+    restart: always
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings
+    depends_on:
+      - "db"
+      - "redis"
+      - "rabbitmq"
+      - "web"
