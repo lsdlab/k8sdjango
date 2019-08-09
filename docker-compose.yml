@@ -51,7 +51,6 @@ services:
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d
       - ./compose/static:/k8sdjango/static
-      - ./compose/static:/k8sdjango/k8sdjango.sock
     depends_on:
       - "web"
 
@@ -59,7 +58,7 @@ services:
     build: .
     image: django-docker-web
     container_name: k8sdjango-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind unix:/k8sdjango/k8sdjango.sock --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi -b 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
     depends_on:
@@ -72,6 +71,8 @@ services:
       - ./compose/log_data/gunicorn_k8sdjango.access.log:/var/log/gunicorn_k8sdjango.access.log;
       - ./compose/log_data/gunicorn_k8sdjango.error.log:/var/log/gunicorn_k8sdjango.error.log;
       - ./compose/static:/k8sdjango/static
+    expose:
+      - "8080"
 
   celery_worker:
     build: .
