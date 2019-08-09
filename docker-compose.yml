@@ -66,16 +66,13 @@ services:
       - "redis"
       - "rabbitmq"
     volumes:
-      - ./compose/log_data/nginx_k8sdjango.access.log:/var/log/nginx_k8sdjango.access.log;
-      - ./compose/log_data/nginx_k8sdjango.error.log:/var/log/nginx_k8sdjango.error.log;
-      - ./compose/log_data/gunicorn_k8sdjango.access.log:/var/log/gunicorn_k8sdjango.access.log;
-      - ./compose/log_data/gunicorn_k8sdjango.error.log:/var/log/gunicorn_k8sdjango.error.log;
+      - ./compose/log_data:/var/log;
       - ./compose/static:/k8sdjango/static
     expose:
       - "8080"
 
   celery_worker:
-    build: .
+    image: django-docker-web
     container_name: k8sdjango-celery_worker
     command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
     restart: always
@@ -88,7 +85,7 @@ services:
       - "web"
 
   celery_beat:
-    build: .
+    image: django-docker-web
     container_name: k8sdjango-celery_beat
     command: celery -A apps.celeryconfig beat --loglevel=info
     restart: always
