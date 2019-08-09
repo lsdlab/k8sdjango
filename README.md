@@ -4,11 +4,10 @@ Django 项目 Docker 部署示例，postgresql 配置映射到容器中，修改
 
 ## 端口占用
 
-nginx 8080
-postgresql 5432 可远程连接
-redis 6379 不可远程连接
-rabbitmq 5672/15672(management web UI可使用)
-nginx 8080
+- nginx 8080
+- postgresql 5432 可远程连接
+- redis 6379 不可远程连接
+- rabbitmq 5672/15672(management web UI可使用)
 
 
 - python 3.7.4
