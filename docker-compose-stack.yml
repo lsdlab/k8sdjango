@@ -61,8 +61,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./src:/src
-      - ./config/nginx:/etc/nginx/conf.d
+      - ./compose/nginx:/etc/nginx/conf.d
+      - ./compose/static:/k8sdjango/static
     depends_on:
       - "web"
 
