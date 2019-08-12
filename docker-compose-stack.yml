@@ -1,25 +1,7 @@
-version: '3'  
+version: '3'
 services:
-  web:
-    build: .
-    image: django-docker-web
-    restart: always
-    deploy:
-      replicas: 4
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.hostname == SmartMP01]
-    depends_on:
-      - "db"
-    volumes:
-      - ./src:/src
-    expose:
-      - "8080"
-      
   db:
     image: postgres:11.4
-    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -34,27 +16,48 @@ services:
       - '5432:5432'
     volumes:
       - ./compose/postgres_data:/var/lib/postgresql/data
- 
+      - ./compose/postgres_data/postgresql.conf:/usr/local/etc/postgresql/11/postgresql.conf
+      - ./compose/postgres_data/pg_hba.conf:/usr/local/etc/postgresql/11/pg_hba.conf
+
   redis:
     image: redis:5.0.5
-    command: redis-server
-    restart: always
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
       placement:
-        constraints: [node.hostname == SmartMP03]
+        constraints: [node.hostname == SmartMP02]
     ports:
      - '6379:6379'
     volumes:
       - ./compose/redis_data:/data
+    depends_on:
+      - "db"
+
+  rabbitmq:
+    image: rabbitmq:3.7.17-management
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == SmartMP02]
+    environment:
+      RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
+      RABBITMQ_DEFAULT_USER: k8sdjangovhost
+      RABBITMQ_DEFAULT_PASS: b8n2maLRb7EUyv8c
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./compose/rabbitmq_data:/var/lib/rabbitmq
+    depends_on:
+      - "redis"
 
   nginx:
     image: nginx:1.16
-    restart: always
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         constraints: [node.hostname == SmartMP01]
     ports:
@@ -64,14 +67,30 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
     depends_on:
       - "web"
-  
-  celery_worker:
+
+  web:
     build: .
+    image: django-docker-web
+    deploy:
+      replicas: 3
+      placement:
+        constraints: [node.hostname == SmartMP01]
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi -b 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
+    environment:
+      DJANGO_SETTINGS_MODULE: conf.production.settings
     depends_on:
-      - "web"
+      - "db"
       - "redis"
+      - "rabbitmq"
+    volumes:
+      - ./compose/log_data:/var/log;
+      - ./compose/static:/k8sdjango/static
+    expose:
+      - "8080"
+
+  celery_worker:
+    image: django-docker-web
     command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
-    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -80,14 +99,15 @@ services:
         constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+    depends_on:
+      - "db"
+      - "redis"
+      - "rabbitmq"
+      - "web"
 
   celery_beat:
-    build: .
-    depends_on:
-      - "web"
-      - "redis"
+    image: django-docker-web
     command: celery -A apps.celeryconfig beat --loglevel=info
-    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -96,3 +116,8 @@ services:
         constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+    depends_on:
+      - "db"
+      - "redis"
+      - "rabbitmq"
+      - "web"

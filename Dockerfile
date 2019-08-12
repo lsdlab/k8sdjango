@@ -17,4 +17,5 @@ RUN apk update \
     && apk del build-deps
 
 # install requirements and copy code
+RUN pip install --upgrade pip setuptools
 RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
