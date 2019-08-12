@@ -19,4 +19,4 @@ class IndexAPIView(APIView):
     serializer_class = EmptySerializer
 
     def get(self, request):
-        return Response({'ip': get_client_ip(request)}, status=status.HTTP_200_OK)
+        return Response({'ping': 'pong'}, status=status.HTTP_200_OK)
