@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
+from .views import IndexAPIView
 
 schema_view = get_swagger_view(title='djshop RESTful API')
 
@@ -24,6 +25,10 @@ if settings.DEBUG:
             'api/v1/jwt/token-refresh/',
             refresh_jwt_token,
             name='token-refresh'),
+        path(
+            '',
+            IndexAPIView.as_view(),
+            name='index-ip'),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -38,6 +43,10 @@ else:
             'api/v1/jwt/token-refresh/',
             refresh_jwt_token,
             name='token-refresh'),
+        path(
+            '',
+            IndexAPIView.as_view(),
+            name='index-ip'),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
