@@ -58,7 +58,7 @@ services:
     build: .
     image: django-docker-web
     container_name: k8sdjango-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi -b 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
     depends_on:

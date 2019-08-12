@@ -34,5 +34,5 @@ docker-compose up
 
 - [x] celery broker 换成 rabbitmq
 - [x] nginx/gunicorn 日志映射出来
-- [ ] docker swarm 集群部署
+- [x] docker swarm 集群部署
 - [ ] k8s 集群部署
