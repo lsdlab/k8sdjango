@@ -13,7 +13,6 @@ RUN echo 'http://mirrors.aliyun.com/alpine/v3.10/main/'>>/etc/apk/repositories
 RUN apk update \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add postgresql-dev \
-    && pip install --upgrade pip setuptools \
     && pip install psycopg2-binary -i https://mirrors.aliyun.com/pypi/simple/ \
     && apk del build-deps
 
