@@ -23,6 +23,5 @@ Django 项目 Docker 部署示例，postgresql 配置映射到容器中，修改
 
 - [x] celery broker 换成 rabbitmq
 - [x] nginx/gunicorn 日志映射出来
-- [ ] 8080 端口占用换成 socket 方式，需要映射出来 
 - [ ] docker swarm 集群部署
 - [ ] k8s 集群部署
