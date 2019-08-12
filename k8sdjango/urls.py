@@ -6,11 +6,11 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from rest_framework_swagger.views import get_swagger_view
 from .views import IndexAPIView
 
-schema_view = get_swagger_view(title='djshop RESTful API')
+schema_view = get_swagger_view(title='k8sdjango RESTful API')
 
-admin.site.site_header = "djshop Admin"
-admin.site.site_title = "djshop Admin"
-admin.site.index_title = "Welcome to djshop Admin"
+admin.site.site_header = "k8sdjango Admin"
+admin.site.site_title = "k8sdjango Admin"
+admin.site.index_title = "Welcome to k8sdjango Admin"
 
 if settings.DEBUG:
     import debug_toolbar
