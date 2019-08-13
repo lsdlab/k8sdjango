@@ -1,6 +1,7 @@
 FROM python:3.7.4-alpine3.10
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE conf.production.settings
+ENV TZ Asia/Shanghai
 RUN mkdir /k8sdjango
 COPY . /k8sdjango
 WORKDIR /k8sdjango

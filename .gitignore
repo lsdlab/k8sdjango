@@ -111,6 +111,4 @@ venv.bak/
 compose/postgres_data/*
 compose/redis_data/*
 compose/rabbitmq_data/*
-compose/static/*
-compose/log_data/*
 .DS_Store
