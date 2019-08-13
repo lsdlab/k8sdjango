@@ -58,15 +58,15 @@ services:
     build: .
     image: django-docker-web
     container_name: k8sdjango-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080 --access-logfile /var/log/gunicorn_k8sdjango.access.log --error-logfile /var/log/gunicorn_k8sdjango.error.log"
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     depends_on:
       - "db"
       - "redis"
       - "rabbitmq"
     volumes:
-      - ./compose/log_data:/var/log;
       - ./compose/static:/k8sdjango/static
     expose:
       - "8080"
@@ -78,6 +78,7 @@ services:
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     depends_on:
       - "db"
       - "redis"
@@ -91,6 +92,7 @@ services:
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     depends_on:
       - "db"
       - "redis"

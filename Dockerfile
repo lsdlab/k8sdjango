@@ -11,6 +11,7 @@ RUN echo 'http://mirrors.aliyun.com/alpine/v3.10/main/'>>/etc/apk/repositories
 
 # install psycopg2-binary
 RUN apk update \
+    && apk add tzdata \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add postgresql-dev \
     && pip install psycopg2-binary -i https://mirrors.aliyun.com/pypi/simple/ \
