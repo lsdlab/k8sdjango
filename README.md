@@ -2,15 +2,6 @@
 
 Django 项目 Docker 部署示例，postgresql 配置映射到容器中，修改成可远程连接，nginx/gunicorn 日志映射到宿主机器，postgresql/redis/rabbitmq 容器数据持久化，映射 volume 到宿主机，ADMIN 的静态文件映射到宿主机器。
 
-
-## docker-compose 启动
-
-```
-docker-compose build
-docker-compose up
-```
-
-
 ## 组件
 
 - python 3.7.4

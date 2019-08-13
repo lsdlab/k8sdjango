@@ -63,14 +63,14 @@ services:
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d
       - ./compose/static:/k8sdjango/static
-      - ./compose/log_data:/k8sdjango/logs
+      - ./compose/nginx_log_data:/var/log/nginx
     depends_on:
       - "web"
 
   web:
     build: .
     image: django-docker-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080 --access-logfile /k8sdjango/logs/gunicorn_k8sdjango.access.log --error-logfile /k8sdjango/logs/gunicorn_k8sdjango.error.log"
+    command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
     deploy:
       replicas: 3
     environment:
@@ -78,7 +78,6 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - ./compose/static:/k8sdjango/static
-      - ./compose/log_data:/k8sdjango/logs
     depends_on:
       - "db"
 
@@ -99,6 +98,7 @@ services:
       - "redis"
       - "rabbitmq"
       - "web"
+      - "nginx"
 
   celery_beat:
     image: django-docker-web
@@ -117,4 +117,6 @@ services:
       - "redis"
       - "rabbitmq"
       - "web"
+      - "nginx"
+      - "celery_worker"
 
