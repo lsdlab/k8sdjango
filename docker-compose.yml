@@ -51,6 +51,7 @@ services:
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d
       - ./compose/static:/k8sdjango/static
+      - ./compose/nginx_log_data:/var/log/nginx
     depends_on:
       - "web"
 
@@ -58,23 +59,21 @@ services:
     build: .
     image: django-docker-web
     container_name: k8sdjango-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
+    command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
-    depends_on:
-      - "db"
-      - "redis"
-      - "rabbitmq"
     volumes:
       - ./compose/static:/k8sdjango/static
+    depends_on:
+      - "db"
     expose:
       - "8080"
 
   celery_worker:
     image: django-docker-web
     container_name: k8sdjango-celery_worker
-    command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
+    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
@@ -84,11 +83,12 @@ services:
       - "redis"
       - "rabbitmq"
       - "web"
+      - "nginx"
 
   celery_beat:
     image: django-docker-web
     container_name: k8sdjango-celery_beat
-    command: celery -A apps.celeryconfig beat --loglevel=info
+    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig beat --loglevel=info"
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
@@ -98,3 +98,5 @@ services:
       - "redis"
       - "rabbitmq"
       - "web"
+      - "nginx"
+      - "celery_worker"

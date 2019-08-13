@@ -1,5 +1,4 @@
-from celery import Celery, platforms
-platforms.C_FORCE_ROOT = True
+from celery import Celery
 from django.apps import apps, AppConfig
 from django.conf import settings
 

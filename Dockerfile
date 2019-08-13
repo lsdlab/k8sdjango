@@ -1,10 +1,8 @@
-FROM python:3.7.4-alpine3.10
+FROM python:3.7.4-alpine3.10 as build1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE conf.production.settings
 ENV TZ Asia/Shanghai
 RUN mkdir /k8sdjango
-COPY . /k8sdjango
-WORKDIR /k8sdjango
 
 # add china mirrors
 RUN echo 'http://mirrors.aliyun.com/alpine/v3.10/community/'>/etc/apk/repositories
@@ -19,4 +17,11 @@ RUN apk update \
     && apk del build-deps
 
 # install requirements and copy code
-RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+COPY requirements.txt /k8sdjango
+RUN pip install -r /k8sdjango/requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+
+FROM python:3.7.4-alpine3.10
+COPY --from=build1 / /
+COPY . /k8sdjango
+WORKDIR /k8sdjango
+COPY ./wait-for /bin/wait-for

@@ -63,27 +63,28 @@ services:
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d
       - ./compose/static:/k8sdjango/static
+      - ./compose/log_data:/k8sdjango/logs
     depends_on:
       - "web"
 
   web:
     build: .
     image: django-docker-web
-    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
+    command: sh -c "python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080 --access-logfile /k8sdjango/logs/gunicorn_k8sdjango.access.log --error-logfile /k8sdjango/logs/gunicorn_k8sdjango.error.log"
     deploy:
       replicas: 3
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     volumes:
       - ./compose/static:/k8sdjango/static
+      - ./compose/log_data:/k8sdjango/logs
     depends_on:
       - "db"
-      - "redis"
-      - "rabbitmq"
 
   celery_worker:
     image: django-docker-web
-    command: celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2
+    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
     deploy:
       replicas: 1
       restart_policy:
@@ -92,6 +93,7 @@ services:
         constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     depends_on:
       - "db"
       - "redis"
@@ -100,7 +102,7 @@ services:
 
   celery_beat:
     image: django-docker-web
-    command: celery -A apps.celeryconfig beat --loglevel=info
+    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig beat --loglevel=info"
     deploy:
       replicas: 1
       restart_policy:
@@ -109,5 +111,10 @@ services:
         constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
+      TZ: Asia/Shanghai
     depends_on:
-      - "celery_worker"
+      - "db"
+      - "redis"
+      - "rabbitmq"
+      - "web"
+
