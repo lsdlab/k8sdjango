@@ -111,4 +111,8 @@ venv.bak/
 compose/postgres_data/*
 compose/redis_data/*
 compose/rabbitmq_data/*
+compose/static/admin/*
+compose/static/django_extensions/*
+compose/static/rest_framework/*
+compose/static/rest_framework_swagger/*
 .DS_Store
