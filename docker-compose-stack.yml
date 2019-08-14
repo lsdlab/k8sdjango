@@ -57,7 +57,7 @@ services:
   nginx:
     image: nginx:1.16
     deploy:
-      replicas: 3
+      replicas: 4
     ports:
       - "8080:8080"
     volumes:
@@ -72,7 +72,7 @@ services:
     image: django-docker-web
     command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
     deploy:
-      replicas: 3
+      replicas: 4
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
