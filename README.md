@@ -1,4 +1,4 @@
-# k8sdjango 
+# k8sdjango
 
 Django 项目 Docker 部署示例，postgresql 配置映射到容器中，修改成可远程连接，nginx/gunicorn 日志映射到宿主机器，postgresql/redis/rabbitmq 容器数据持久化，映射 volume 到宿主机，ADMIN 的静态文件映射到宿主机器。
 
@@ -21,7 +21,14 @@ docker-compose up
 ```
 cd k8sdjango
 docker-compose build
+
+# 启动所有服务
 docker stack deplpoy docker-compose-stack.yml k8sdjango
+
+# 查看服务列表，replica 是否都启动完成
+docker services list
+
+# 关闭所有服务
 docker stack down k8sdjango
 ```
 
@@ -48,6 +55,6 @@ docker stack down k8sdjango
 ## ROADMAP
 
 - [x] celery broker 换成 rabbitmq
-- [x] nginx/gunicorn 日志映射出来
+- [x] nginx 日志映射出来
 - [x] docker swarm 集群部署
 - [ ] k8s 集群部署
