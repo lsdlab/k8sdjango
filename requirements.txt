@@ -27,5 +27,14 @@ django-extensions==2.1.4
 django-debug-toolbar==1.11
 better-exceptions==0.2.2
 
+# test
+factory-boy
+faker
+nose
+pytest
+pytest-django
+pytest-sugar
+pytest-cov
+
 # production
 gunicorn==19.9.0
