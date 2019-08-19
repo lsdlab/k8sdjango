@@ -166,26 +166,6 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
                         "detail": "用户名或密码错误"
                     }, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(
-        methods=['post'],
-        detail=False,
-        url_path='password/change',
-        url_name='change_password',
-        serializer_class=UserChangePasswordSerializer,
-        permission_classes=[IsAuthenticated, IsOwn])
-    def change_password(self, request):
-        """
-            已登录的时候修改密码，需要 token
-            {
-                "current_password": "123",
-                "new_password": "123"
-            }
-        """
-        current_password = request.data.get('current_password')
-        new_password = request.data.get('new_password')
-        change_password_status = User.change_password_in_profile(
-            current_password, new_password)
-        return change_password_status
 
     @action(
         methods=['get'],

@@ -29,18 +29,6 @@ class User(AbstractUser):
         verbose_name = '用户'
         verbose_name_plural = verbose_name
 
-    @classmethod
-    def change_password_in_profile(self, current_password, new_password):
-        user = authenticate(username=self.username, password=current_password)
-        if user:
-            self.set_password(new_password)
-            self.save()
-            return Response({"success": True}, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {
-                    "detail": "旧密码输入错误。"
-                }, status=status.HTTP_400_BAD_REQUEST)
 
     @classmethod
     def check_user_exist(self, mobile, email):

@@ -27,7 +27,7 @@ if settings.DEBUG:
             name='token-refresh'),
         path('', include('apps.users.urls')),
         path(
-            '',
+            'ping/',
             IndexAPIView.as_view(),
             name='index-ping'),
     ] + static(
@@ -46,7 +46,7 @@ else:
             name='token-refresh'),
         path('', include('apps.users.urls')),
         path(
-            '',
+            'ping/',
             IndexAPIView.as_view(),
             name='index-ping'),
     ] + static(
