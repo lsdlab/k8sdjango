@@ -19,9 +19,8 @@ cache:
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
 before_script:
-  - python -V                                   # Print out python version for debugging
-  - pip install -U pip setuptools
-  - pip install -r requirements/requirements.txt
+  - python3 -V                                   # Print out python version for debugging
+  - pip3 install -r requirements/requirements.txt
   - export DJANGO_SETTINGS_MODULE=conf.development.settings
 
 test:
