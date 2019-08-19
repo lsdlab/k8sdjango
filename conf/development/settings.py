@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'apps.celeryconfig.celery.CeleryConfig',
     'apps.core',
+    'apps.users',
 ]
 
 SITE_ID = 1
@@ -157,7 +158,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'apps', "media/")
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 
 # logging settings

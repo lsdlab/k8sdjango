@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'apps.celeryconfig.celery.CeleryConfig',
     'apps.core',
+    'apps.users',
 ]
 
 SITE_ID = 1
@@ -128,7 +129,7 @@ STATIC_ROOT = './static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'apps', "media/")
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 
 # logging settings

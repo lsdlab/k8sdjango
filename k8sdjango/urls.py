@@ -25,10 +25,11 @@ if settings.DEBUG:
             'api/v1/jwt/token-refresh/',
             refresh_jwt_token,
             name='token-refresh'),
+        path('', include('apps.users.urls')),
         path(
             '',
             IndexAPIView.as_view(),
-            name='index-ip'),
+            name='index-ping'),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -43,10 +44,11 @@ else:
             'api/v1/jwt/token-refresh/',
             refresh_jwt_token,
             name='token-refresh'),
+        path('', include('apps.users.urls')),
         path(
             '',
             IndexAPIView.as_view(),
-            name='index-ip'),
+            name='index-ping'),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
