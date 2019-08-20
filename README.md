@@ -52,6 +52,11 @@ docker stack down k8sdjango
 - rabbitmq 5672/15672(management web UI可使用)
 
 
+## rabbitmq + stomp
+
+`rabbitmq_stomp.py` 向队列发送消息
+
+
 ## ROADMAP
 
 - [x] celery broker 换成 rabbitmq

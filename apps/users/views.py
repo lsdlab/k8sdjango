@@ -21,8 +21,6 @@ from .permissions import IsCreationOrIsAuthenticated, IsOwn
 from apps.core.serializers import EmptySerializer
 from apps.core.patch_only_mixin import PatchOnlyMixin
 from apps.core.utils import get_user_ip
-import shortuuid
-import requests
 
 
 def log_user_ip(request, user):
