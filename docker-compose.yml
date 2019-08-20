@@ -12,8 +12,8 @@ services:
       - '5432:5432'
     volumes:
       - ./compose/postgres_data:/var/lib/postgresql/data
-      - ./compose/postgres_data/postgresql.conf:/usr/local/etc/postgresql/11/postgresql.conf
-      - ./compose/postgres_data/pg_hba.conf:/usr/local/etc/postgresql/11/pg_hba.conf
+      - ./compose/postgresql.conf:/usr/local/etc/postgresql/11/postgresql.conf
+      - ./compose/pg_hba.conf:/usr/local/etc/postgresql/11/pg_hba.conf
 
   redis:
     image: redis:5.0.5
@@ -30,15 +30,17 @@ services:
     image: rabbitmq:3.7.17-management
     container_name: k8sdjango-rabbitmq
     restart: always
-    environment:
-      RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
-      RABBITMQ_DEFAULT_USER: k8sdjangovhost
-      RABBITMQ_DEFAULT_PASS: b8n2maLRb7EUyv8c
+    # environment:
+    #   RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
+    #   RABBITMQ_DEFAULT_USER: k8sdjangovhost
+    #   RABBITMQ_DEFAULT_PASS: b8n2maLRb7EUyv8c
     ports:
       - '5672:5672'
       - '15672:15672'
+      - '15674:15674'
     volumes:
       - ./compose/rabbitmq_data:/var/lib/rabbitmq
+      - ./compose/rabbitmq_plugins:/etc/rabbitmq/enabled_plugins
     depends_on:
       - "redis"
 
@@ -51,7 +53,7 @@ services:
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d
       - ./compose/static:/k8sdjango/static
-      - ./compose/nginx_log_data:/var/log/nginx
+      - ./compose/nginx_log:/var/log/nginx
     depends_on:
       - "web"
 
@@ -73,7 +75,7 @@ services:
   celery_worker:
     image: django-docker-web
     container_name: k8sdjango-celery_worker
-    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
+    command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
@@ -88,7 +90,7 @@ services:
   celery_beat:
     image: django-docker-web
     container_name: k8sdjango-celery_beat
-    command: sh -c "wait-for rabbitmq:15672 && celery -A apps.celeryconfig beat --loglevel=info"
+    command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig beat --loglevel=info"
     restart: always
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings

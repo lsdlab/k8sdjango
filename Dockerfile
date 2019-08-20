@@ -13,6 +13,7 @@ RUN apk update \
     && apk add tzdata \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add postgresql-dev \
+    && pip install -U pip setuptools -i https://mirrors.aliyun.com/pypi/simple/ \
     && pip install psycopg2-binary -i https://mirrors.aliyun.com/pypi/simple/ \
     && apk del build-deps
 

@@ -26,13 +26,16 @@ shell-db:
 	docker exec -ti k8sdjango-postgres /bin/sh
 
 log-nginx:
-	docker-compose logs nginx  
+	docker-compose logs nginx
 
 log-web:
-	docker-compose logs web  
+	docker-compose logs web
 
 log-db:
 	docker-compose logs db
 
 collectstatic:
-	docker exec k8sdjango-web /bin/sh -c "python manage.py collectstatic --noinput"  
+	docker exec -it k8sdjango-web /bin/sh -c "python manage.py collectstatic"
+
+createsuperuser:
+	docker exec -it k8sdjango-web /bin/sh -c "python manage.py createsuperuser"
