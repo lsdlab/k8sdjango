@@ -27,7 +27,7 @@ services:
       - "db"
 
   rabbitmq:
-    image: rabbitmq:3.7.17-management
+    image: rabbitmq:3.7.17
     container_name: k8sdjango-rabbitmq
     restart: always
     # environment:
