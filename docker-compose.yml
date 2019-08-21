@@ -4,6 +4,11 @@ services:
     image: postgres:11.4
     container_name: k8sdjango-postgres
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2000M
     environment:
       POSTGRES_USER: k8sdjango_production
       POSTGRES_PASSWORD: b8n2maLRb7EUyv8c
@@ -19,6 +24,11 @@ services:
     image: redis:5.0.5
     container_name: k8sdjango-redis
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 500M
     ports:
      - '6379:6379'
     volumes:
@@ -30,6 +40,11 @@ services:
     image: rabbitmq:3.7.17
     container_name: k8sdjango-rabbitmq
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 1500M
     # environment:
     #   RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
     #   RABBITMQ_DEFAULT_USER: k8sdjangovhost
@@ -77,6 +92,11 @@ services:
     container_name: k8sdjango-celery_worker
     command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 500M
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
@@ -92,6 +112,11 @@ services:
     container_name: k8sdjango-celery_beat
     command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig beat --loglevel=info"
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 500M
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
