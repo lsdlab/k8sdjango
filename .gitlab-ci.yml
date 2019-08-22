@@ -1,7 +1,7 @@
 # This file is a template, and might need editing before it works on your project.
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python
-image: http://192.168.124.62:5000/django-docker-web
+image: python:3.6.5
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -20,7 +20,7 @@ cache:
 # services such as redis or postgres
 before_script:
   - python3 -V                                   # Print out python version for debugging
-  - pip3 install -r requirements.txt
+  - pip3 install -r requirements_gitlab.txt
   - export DJANGO_SETTINGS_MODULE=conf.development.settings
 
 test:
