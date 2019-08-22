@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:11.4
     container_name: k8sdjango-postgres
-    restart: always
+    restart: on-failure
     environment:
       POSTGRES_USER: k8sdjango_development
       POSTGRES_PASSWORD: b8n2maLRb7EUyv8c
@@ -18,7 +18,7 @@ services:
   redis:
     image: redis:5.0.5
     container_name: k8sdjango-redis
-    restart: always
+    restart: on-failure
     ports:
      - '6379:6379'
     volumes:

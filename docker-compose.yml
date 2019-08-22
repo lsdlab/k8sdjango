@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:11.4
     container_name: k8sdjango-postgres
-    restart: always
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -23,7 +23,7 @@ services:
   redis:
     image: redis:5.0.5
     container_name: k8sdjango-redis
-    restart: always
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -39,7 +39,7 @@ services:
   rabbitmq:
     image: rabbitmq:3.7.17
     container_name: k8sdjango-rabbitmq
-    restart: always
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -62,7 +62,7 @@ services:
   nginx:
     image: nginx:1.16
     container_name: k8sdjango-nginx
-    restart: always
+    restart: on-failure
     ports:
       - "8080:8080"
     volumes:
@@ -91,7 +91,7 @@ services:
     image: django-docker-web
     container_name: k8sdjango-celery_worker
     command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig worker --loglevel=info --autoscale=4,2"
-    restart: always
+    restart: on-failure
     deploy:
       resources:
         limits:
@@ -111,7 +111,7 @@ services:
     image: django-docker-web
     container_name: k8sdjango-celery_beat
     command: sh -c "wait-for rabbitmq:5672 && celery -A apps.celeryconfig beat --loglevel=info"
-    restart: always
+    restart: on-failure
     deploy:
       resources:
         limits:
