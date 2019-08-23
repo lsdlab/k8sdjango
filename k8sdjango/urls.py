@@ -30,6 +30,7 @@ if settings.DEBUG:
             'ping/',
             IndexAPIView.as_view(),
             name='index-ping'),
+        path('activity/', include('actstream.urls')),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -49,6 +50,7 @@ else:
             'ping/',
             IndexAPIView.as_view(),
             name='index-ping'),
+        path('activity/', include('actstream.urls')),
     ] + static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(
             settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

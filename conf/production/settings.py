@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'apps.celeryconfig.celery.CeleryConfig',
     'apps.core',
     'apps.users',
+    'actstream',
 ]
 
 SITE_ID = 1
