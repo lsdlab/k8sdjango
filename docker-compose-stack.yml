@@ -128,4 +128,3 @@ services:
       - "web"
       - "nginx"
       - "celery_worker"
-

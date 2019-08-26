@@ -76,7 +76,7 @@ services:
     build: .
     image: django-docker-web
     container_name: k8sdjango-web
-    command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --bind 0.0.0.0:8080"
+    command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --threads=2 --bind 0.0.0.0:8080"
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
