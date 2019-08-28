@@ -1,5 +1,7 @@
 # k8sdjango
 
+![Language](https://img.shields.io/badge/language-Python-blue.svg?style=flat-square)
+
 Django 项目 Docker 部署示例，postgresql 配置映射到容器中，修改成可远程连接，nginx/gunicorn 日志映射到宿主机器，postgresql/redis/rabbitmq 容器数据持久化，映射 volume 到宿主机，ADMIN 的静态文件映射到宿主机器。
 
 

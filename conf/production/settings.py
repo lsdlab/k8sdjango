@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.users',
     'actstream',
+    'apps.actions',
 ]
 
 SITE_ID = 1
