@@ -16,6 +16,7 @@ django-cors-headers==3.0.2
 celery==4.3.0
 # rabbitmq
 pika==1.0.1
+django-activity-stream==0.8.0
 # utils
 python-dotenv==0.10.1
 
