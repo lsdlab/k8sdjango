@@ -1,6 +1,4 @@
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from apps.core.models import TimestampedModel
 
 
@@ -25,6 +23,7 @@ class Action(TimestampedModel):
 
     exchange = models.TextField(max_length=1, choices=EXCHANGE_CHOICES, blank=True, null=True)
     routing_key = models.CharField(max_length=255, blank=True, null=True)
+    ack = models.NullBooleanField(default=null)
 
     def __str__(self):
         return self.actor + '_' + self.verb
