@@ -23,7 +23,7 @@ class Action(TimestampedModel):
 
     exchange = models.TextField(max_length=1, choices=EXCHANGE_CHOICES, blank=True, null=True)
     routing_key = models.CharField(max_length=255, blank=True, null=True)
-    ack = models.NullBooleanField(default=null)
+    ack = models.NullBooleanField(default=None)
 
     def __str__(self):
         return self.actor + '_' + self.verb
