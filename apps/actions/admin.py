@@ -17,8 +17,9 @@ class ActionAdmin(admin.ModelAdmin):
         'deleted',
         'exchange',
         'routing_key',
+        'ack',
         'created_at',
         'updated_at',
     )
-    list_filter = ('created_at', 'updated_at', 'deleted')
+    list_filter = ('created_at', 'updated_at',)
     date_hierarchy = 'created_at'
