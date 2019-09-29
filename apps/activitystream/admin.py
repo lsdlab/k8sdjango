@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Action
+from .models import ActivityStream
 
 
-@admin.register(Action)
-class ActionAdmin(admin.ModelAdmin):
+@admin.register(ActivityStream)
+class ActivityStreamAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'actor',
@@ -21,5 +21,5 @@ class ActionAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = ('created_at', 'updated_at',)
+    list_filter = ('created_at', 'updated_at')
     date_hierarchy = 'created_at'

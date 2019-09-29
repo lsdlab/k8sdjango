@@ -1,8 +1,11 @@
+from datetime import datetime
 from django.db import models
+from django.conf import settings
 from apps.core.models import TimestampedModel
+import timeago
 
 
-class Action(TimestampedModel):
+class ActivityStream(TimestampedModel):
     TOPIC = '1'
     DIRECT = '2'
     FANOUT = '3'
@@ -21,14 +24,20 @@ class Action(TimestampedModel):
     target_id = models.CharField(max_length=255, blank=True, default='')
     deleted = models.BooleanField(default=False)
 
-    exchange = models.TextField(max_length=1, choices=EXCHANGE_CHOICES, blank=True, null=True)
+    exchange = models.TextField(max_length=1,
+                                choices=EXCHANGE_CHOICES,
+                                blank=True,
+                                null=True)
     routing_key = models.CharField(max_length=255, blank=True, null=True)
     ack = models.NullBooleanField(default=None)
-
+    
     def __str__(self):
-        return self.actor + '_' + self.verb
+        now = datetime.now()
+        return self.actor + self.verb + timeago.format(self.created_at, now, 'zh_CN')
 
     class Meta:
-        ordering = ['-created_at', '-updated_at']
-        verbose_name = '动态'
+        ordering = [
+            '-created_at',
+        ]
+        verbose_name = '动态消息'
         verbose_name_plural = verbose_name
