@@ -6,8 +6,9 @@ from .models import ActivityStream
 from .serializers import ActivityStreamSerializer, ActivityStreamCreateSerializer
 
 def cache_acitivty_stream(user):
-    cache_key = str(user.id) + '_activitystream'
-    queryset = ActivityStream.objects.filter(user=user)[:10]
+    actor_id = str(user.id)
+    cache_key = actor_id + '_activitystream'
+    queryset = ActivityStream.objects.filter(actor_id=actor_id)[:10]
     serializer = ActivityStreamSerializer(queryset, many=True)
     cache.set(cache_key, serializer.data, timeout=None)
 
@@ -28,12 +29,14 @@ class ActivityStreamViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         serializer.save()
 
     def list(self, request):
-        cache_key = str(request.user.id) + '_activitystream'
+        user = request.user
+        actor_id = str(user.id)
+        cache_key = str(user.id) + '_activitystream'
         cache_value = cache.get(cache_key)
         if cache_value:
             return Response(cache_value, status=status.HTTP_200_OK)
         else:
-            queryset = ActivityStream.objects.filter(user=request.user)
+            queryset = ActivityStream.objects.filter(actor_id=actor_id)
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = ActivityStreamSerializer(page, many=True)

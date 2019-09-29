@@ -9,7 +9,7 @@ spec:
     app: postgresql
   clusterIP: None
 ---
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgresql
@@ -25,7 +25,7 @@ spec:
         app: postgresql
     spec:
       containers:
-      - image: postgresql:11.4
+      - image: postgresql:11.5
         name: postgresql
         env:
         - name: POSTGRES_DB

@@ -38,7 +38,7 @@ docker stack down k8sdjango
 ## 组件
 
 - python 3.7.4
-- postgresql 11.4
+- postgresql 11.5
 - redis 5.0.5
 - rabbitmq 3.7.17 with management web UI
 - nginx 1.16
