@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.users',
     'apps.activitystream',
+    'apps.agents',
 ]
 
 SITE_ID = 1
