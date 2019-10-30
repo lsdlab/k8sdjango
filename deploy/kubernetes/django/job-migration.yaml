@@ -1,24 +1,14 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: django
-  labels:
-    app: django
+  name: django-migrations
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: django-container
   template:
-    metadata:
-      labels:
-        app: django-container
     spec:
       containers:
         - name: django
           image: 192.168.124.61:5000/django-docker-web
-          ports:
-            - containerPort: 8000
+          command: ['python', 'manage.py', 'migrate']
           env:
             - name: POSTGRES_DB
               valueFrom:
@@ -40,3 +30,5 @@ spec:
 
             - name: POSTGRES_HOST
               value: postgres-service
+      restartPolicy: Never
+  backoffLimit: 5

@@ -1,24 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: django
-  labels:
-    app: django
+  name: postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: django-container
+      app: postgres-container
   template:
     metadata:
       labels:
-        app: django-container
+        app: postgres-container
+        tier: backend
     spec:
       containers:
-        - name: django
-          image: 192.168.124.61:5000/django-docker-web
-          ports:
-            - containerPort: 8000
+        - name: postgres-container
+          image: postgres:11.5
           env:
             - name: POSTGRES_DB
               valueFrom:
@@ -38,5 +35,16 @@ spec:
                   name: postgres-credentials
                   key: password
 
-            - name: POSTGRES_HOST
-              value: postgres-service
+            - name: POSTGRES_DB
+              value: kubernetes_django
+
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-volume-mount
+              mountPath: /var/lib/postgresql/data
+
+      volumes:
+        - name: postgres-volume-mount
+          persistentVolumeClaim:
+            claimName: postgres-pvc
