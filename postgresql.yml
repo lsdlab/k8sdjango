@@ -1,0 +1,55 @@
+
+# postgresql
+# dns: postgresql.k8sdjango.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: k8sdjango
+spec:
+  ports:
+    - port: 5432
+      targetPort: postgresql-port
+  selector:
+    app: postgresql-pod
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k8sdjango-postgresql
+  namespace: k8sdjango
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresql-pod
+    spec:
+      nodeName: 192.168.124.61
+      containers:
+        - name: k8sdjango-postgresql
+          image: postgres:11.5
+          imagePullPolicy: Always
+
+          env:
+            - name: POSTGRES_DB
+              value: k8sdjango_production
+            - name: POSTGRES_USER
+              value: k8sdjango_production
+            - name: POSTGRES_PASSWORD
+              value: b8n2maLRb7EUyv8c
+
+          ports:
+            - name: postgresql-port
+              containerPort: 5432
+
+          volumeMounts:
+            - name: postgresql-storage
+              mountPath: /var/lib/postgresql
+
+      volumes:
+        - name: postgresql-storage
+          hostPath:
+            path: /data/postgresql
