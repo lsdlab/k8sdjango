@@ -14,9 +14,6 @@ django-rest-swagger==2.2.0
 django-cors-headers==3.0.2
 # job queues and job scheduling
 celery==4.3.0
-# rabbitmq
-git+https://github.com/lsdlab/pika-pool.git
-django-activity-stream==0.8.0
 # utils
 python-dotenv==0.10.1
 timeago==1.0.8
