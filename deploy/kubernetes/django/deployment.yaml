@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: django
+  labels:
+    app: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-container
+  template:
+    metadata:
+      labels:
+        app: django-container
+    spec:
+      containers:
+        - name: django-web
+          image: 192.168.124.61:5000/django-docker-web
+          ports:
+            - containerPort: 8000

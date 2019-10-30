@@ -41,5 +41,5 @@ spec:
           name: postgresql
         volumeMounts:
           - mountPath: /var/lib/postgresql/data/
-            name: pg-data
+            name: PGDATA
             subPath: postgresql
