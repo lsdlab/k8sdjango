@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: django-docker-web
-          image: django-docker-web:latest
+          image: 192.168.124.62:5000/django-docker-web:latest
           command: ['python', 'manage.py', 'migrate']
           env:
             - name: POSTGRES_DB
