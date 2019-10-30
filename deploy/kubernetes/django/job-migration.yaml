@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-        - name: django
+        - name: django-docker-web
           image: 192.168.124.61:5000/django-docker-web
           command: ['python', 'manage.py', 'migrate']
           env:
