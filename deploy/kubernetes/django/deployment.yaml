@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: django-docker-web
-          image: 192.168.124.65:5000/django-docker-web:latest
+          image: http://192.168.124.65:5000/django-docker-web:latest
           ports:
             - containerPort: 8000
           env:
