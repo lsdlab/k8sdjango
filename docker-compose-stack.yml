@@ -58,11 +58,9 @@ services:
   nginx:
     image: nginx:1.16
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: on-failure
-      placement:
-        constraints: [node.role == master]
     ports:
       - "8080:8080"
     volumes:
@@ -77,11 +75,9 @@ services:
     image: django-docker-web
     command: sh -c "wait-for db:5432 && python manage.py collectstatic --no-input && python manage.py migrate && gunicorn k8sdjango.wsgi --workers 5 --threads=2 --bind 0.0.0.0:8080"
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         condition: on-failure
-      placement:
-        constraints: [node.role == master]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
@@ -97,8 +93,6 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      placement:
-        constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
@@ -116,8 +110,6 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      placement:
-        constraints: [node.hostname == SmartMP03]
     environment:
       DJANGO_SETTINGS_MODULE: conf.production.settings
       TZ: Asia/Shanghai
