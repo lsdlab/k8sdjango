@@ -1,9 +1,9 @@
 # Django
 Django>=2.1.10
 # postgresql middleware
-# psycopg2==2.7.6.1 --no-binary psycopg2
-# psycopg2==2.7.6.1
-# psycopg2-binary==2.7.6.1
+psycopg2==2.8.4
+# psycopg2-binary==2.8.4
+# psycopg2==2.8.4 --no-binary psycopg2
 # django-redis and redis
 django-redis==4.10.0
 redis==3.2.0
