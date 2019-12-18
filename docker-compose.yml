@@ -46,7 +46,7 @@ services:
           cpus: '0.30'
           memory: 1500M
     # environment:
-    #   RABBITMQ_DEFAULT_VHOST: k8sdjangovhost
+    #   RABBITMQ_DEFAULT_VHOST: '/'
     #   RABBITMQ_DEFAULT_USER: k8sdjangovhost
     #   RABBITMQ_DEFAULT_PASS: b8n2maLRb7EUyv8c
     ports:

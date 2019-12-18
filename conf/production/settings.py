@@ -133,35 +133,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'apps', "media/")
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 
-# logging settings
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format':
-            '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        # 'file': {
-        #     'level': 'DEBUG',
-        #     'class': 'logging.FileHandler',
-        #     'filename': os.path.join(BASE_DIR, 'logs', 'development.log'),
-        # },
-    },
-    'loggers': {
-        # 'django': {
-        #     'handlers': ['file'],
-        #     'level': 'DEBUG',
-        #     'propagate': True,
-        # },
-    },
-}
-
 # django-restframework/jwt/swagger settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':
