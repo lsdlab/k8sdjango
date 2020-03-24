@@ -20,7 +20,7 @@ cache:
 # services such as redis or postgres
 before_script:
   - python3 -V                                   # Print out python version for debugging
-  - pip3 install -r requirements_gitlab.txt -i https://mirrors.aliyun.com/pypi/simple/
+  - pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
   - export DJANGO_SETTINGS_MODULE=conf.development.settings
 
 test:
